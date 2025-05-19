@@ -1,1 +1,1 @@
-# Trading-Strategy-Evaluation-Framework
+# Trading Strategy Evaluation Framework (TSEF)
