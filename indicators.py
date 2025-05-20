@@ -7,13 +7,14 @@ def compute_sma(data: pd.DataFrame, period: int) -> list:
     # Compute initial sum based on window size (period)
     price_sum = sum(df['Close'].iloc[:period])
 
-    sma_list = [round(price_sum / period, 2)]
+    sma_list = []
 
     for i in range(period, len(df)):
+        sma_list.append(round(float(price_sum / period), 2))
+
         u_bound = df['Close'].iloc[i]
         l_bound = df['Close'].iloc[i - period]
 
         price_sum = price_sum + u_bound - l_bound
-        sma_list.append(round(float(price_sum / period), 2))
 
     return sma_list
