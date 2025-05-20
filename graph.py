@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from io import StringIO
 
-# AAPL data string
 aapl_data = """
 2024-05-03,AAPL,185.53,185.88,181.56,182.28,163224100.0
 2024-05-06,AAPL,181.26,183.09,179.34,180.62,78569700.0
@@ -23,22 +22,18 @@ aapl_data = """
 2024-05-28,AAPL,190.62,192.1,188.22,189.11,52280100.0
 """
 
-# Load into DataFrame
 df = pd.read_csv(StringIO(aapl_data), header=None,
                  names=["Date", "Symbol", "Open", "High", "Low", "Close", "Volume"])
 df["Date"] = pd.to_datetime(df["Date"])
 
-# Extract close prices and dates
 close_prices = df["Close"].tolist()
 dates = df["Date"].tolist()
 
-# Custom SMA values (length 17 to match Close prices)
 custom_sma = [
     171.37, 171.35, 171.34, 171.36, 171.36, 171.43, 171.48, 171.61, 171.86,
     172.26, 172.68, 173.1, 173.5, 173.9, 174.26, 174.57, 174.92
 ]
 
-# Plotting
 plt.figure(figsize=(12, 6))
 plt.plot(dates, close_prices, label="AAPL Close Prices", marker='o')
 plt.plot(dates, custom_sma, label="Custom SMA", marker='x')
