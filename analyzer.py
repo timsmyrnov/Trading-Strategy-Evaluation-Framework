@@ -33,6 +33,5 @@ class Analyzer:
         return indicators.compute_sma(self.data, self.strategy.sma_period)
 
 if __name__ == '__main__':
-    a = Analyzer('AAPL', '2024-05-03', '2024-05-28')
-    # Expected output size: 17
+    a = Analyzer('AAPL', '2024-06-03', '2024-12-12')
     print(a.gen_signal(), len(a.gen_signal()))
