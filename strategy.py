@@ -5,15 +5,15 @@ class Strategy:
         self.sma_period = 50
         self.atr_period = 14
 
-    def set_RSI(self, lower: int, upper: int, period: int):
+    def set_rsi(self, lower: int, upper: int, period: int):
         self.rsi_l = lower
         self.rsi_u = upper
         self.rsi_period = period
 
-    def set_SMA(self, period: int):
+    def set_sma(self, period: int):
         self.sma_period = period
 
-    def set_ATR(self, period: int):
+    def set_atr(self, period: int):
         self.atr_period = period
 
     def show_strategy(self):
