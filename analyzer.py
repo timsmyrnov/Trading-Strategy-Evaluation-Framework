@@ -34,4 +34,4 @@ class Analyzer:
 
 if __name__ == '__main__':
     a = Analyzer('AAPL', '2024-06-03', '2024-12-12')
-    print(a.gen_signal(), len(a.gen_signal()))
+    print(a.gen_signal())
