@@ -30,7 +30,9 @@ class Analyzer:
         self.data = data.loc[start_idx:end_idx].reset_index(drop=True)
 
     def gen_signal(self):
-        return indicators.compute_sma(self.data, self.strategy.sma_period)
+        sma = indicators.compute_sma(self.data, self.strategy.sma_period)
+        print(len(sma))
+        return indicators.compute_rsi(self.data, self.strategy.rsi_period)
 
 if __name__ == '__main__':
     a = Analyzer('AAPL', '2024-06-03', '2024-12-12')
