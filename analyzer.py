@@ -34,13 +34,9 @@ class Analyzer:
         rsi_idx = self.max_margin - self.strategy.rsi_interval
         atr_idx = self.max_margin - self.strategy.atr_interval
 
-        print(sma_idx, rsi_idx, atr_idx)
-
         sma = indicators.compute_sma(self.data.loc[sma_idx:], self.strategy.sma_interval)
         rsi = indicators.compute_rsi(self.data.loc[rsi_idx:], self.strategy.rsi_interval)
-
-        print(len(sma), len(rsi))
-        print(rsi)
+        atr = indicators.compute_atr(self.data.loc[atr_idx:], self.strategy.atr_interval)
 
 if __name__ == '__main__':
     a = Analyzer('AAPL', '2024-06-03', '2024-12-12')

@@ -2,7 +2,7 @@ import get_market_data as gmd
 import pandas as pd
 
 def compute_sma(data: pd.DataFrame, interval: int) -> list:
-    # Compute initial sum based on window size (period)
+    # Compute initial sum based on window size (interval)
     price_sum = sum(data['Close'].iloc[:interval])
 
     sma_list = []
@@ -47,3 +47,30 @@ def compute_rsi(data: pd.DataFrame, interval: int) -> list:
         rsi_list.append(100) if avg_loss == 0 else rsi_list.append(round(100 - 100 / (1 + avg_gain / avg_loss), 2))
 
     return rsi_list
+
+def compute_atr(data: pd.DataFrame, interval: int) -> list:
+    tr_sum = 0
+
+    for i in range(1, interval + 1):
+        tr = max(
+            data['High'].iloc[i] - data['Low'].iloc[i],
+            abs(data['High'].iloc[i] - data['Close'].iloc[i-1]),
+            abs(data['Low'].iloc[i] - data['Close'].iloc[i-1])
+        )
+        tr_sum += tr
+
+    atr = round(float(tr_sum / interval), 2)
+    atr_list = [atr]
+
+    for j in range(interval + 1, len(data)):
+        curr_tr = max(
+            data['High'].iloc[j] - data['Low'].iloc[j],
+            abs(data['High'].iloc[j] - data['Close'].iloc[j-1]),
+            abs(data['Low'].iloc[j] - data['Close'].iloc[j-1])
+        )
+
+        # Wilder's smoothing
+        atr = round(float((atr * (interval - 1) + curr_tr) / interval), 2)
+        atr_list.append(atr)
+
+    return atr_list
