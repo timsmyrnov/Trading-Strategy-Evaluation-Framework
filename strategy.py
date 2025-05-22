@@ -1,27 +1,27 @@
 class Strategy:
     def __init__(self):
         self.rsi_l, self.rsi_u = 30, 70
-        self.rsi_period = 14
-        self.sma_period = 50
-        self.atr_period = 14
+        self.rsi_interval = 14
+        self.sma_interval = 50
+        self.atr_interval = 14
 
-    def set_rsi(self, lower: int, upper: int, period: int):
+    def set_rsi(self, lower: int, upper: int, interval: int):
         self.rsi_l = lower
         self.rsi_u = upper
-        self.rsi_period = period
+        self.rsi_interval = interval
 
-    def set_sma(self, period: int):
-        self.sma_period = period
+    def set_sma(self, interval: int):
+        self.sma_interval = interval
 
-    def set_atr(self, period: int):
-        self.atr_period = period
+    def set_atr(self, interval: int):
+        self.atr_interval = interval
 
     def show_strategy(self):
         return f'''
         RSI bounds: {self.rsi_l}, {self.rsi_u}
-        RSI period: {self.rsi_period}
-        SMA period: {self.sma_period}
-        ATR period: {self.atr_period}
+        RSI interval: {self.rsi_interval}
+        SMA interval: {self.sma_interval}
+        ATR interval: {self.atr_interval}
         '''
     
 if __name__ == '__main__':

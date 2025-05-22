@@ -2,7 +2,6 @@ import get_market_data as gmd
 import pandas as pd
 
 def compute_sma(data: pd.DataFrame, interval: int) -> list:
-    
     # Compute initial sum based on window size (period)
     price_sum = sum(data['Close'].iloc[:interval])
 
@@ -28,9 +27,23 @@ def compute_rsi(data: pd.DataFrame, interval: int) -> list:
         gain_pct.append(pct_change if pct_change > 0 else 0)
         loss_pct.append(abs(pct_change) if pct_change < 0 else 0)
 
-    rsi_list = [100] if sum(loss_pct) == 0 else [round(100 - 100 / (1 + (sum(gain_pct) / interval) / (sum(loss_pct) / interval)), 2)]
+    avg_gain = sum(gain_pct) / interval
+    avg_loss = sum(loss_pct) / interval
 
-    for j in range(interval + 1, len(data) - 1):
-        rsi_list.append(j)
+    rsi_list = [100] if avg_loss == 0 else [round(100 - 100 / (1 + avg_gain / avg_loss), 2)]
 
-    return len(rsi_list)
+    for j in range(interval + 1, len(data)):
+        curr_pct_change = float((data['Close'].iloc[j] - data['Close'].iloc[j-1]) / data['Close'].iloc[j-1] * 100)
+
+        # Wilder's smoothing
+        if curr_pct_change > 0:
+            avg_gain = (avg_gain * (interval - 1) + curr_pct_change) / interval
+            avg_loss = (avg_loss * (interval - 1) + 0) / interval
+
+        elif curr_pct_change < 0:
+            avg_loss = (avg_loss * (interval - 1) + abs(curr_pct_change)) / interval
+            avg_gain = (avg_gain * (interval - 1) + 0) / interval
+
+        rsi_list.append(100) if avg_loss == 0 else rsi_list.append(round(100 - 100 / (1 + avg_gain / avg_loss), 2))
+
+    return rsi_list
