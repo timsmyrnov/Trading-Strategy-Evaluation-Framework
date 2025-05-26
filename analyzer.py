@@ -29,7 +29,7 @@ class Analyzer:
 
         self.data = data.loc[start_idx:end_idx].reset_index(drop=True)
 
-    def gen_signal(self):
+    def gen_signals(self):
         sma_idx = self.max_margin - self.strategy.sma_interval
         rsi_idx = self.max_margin - self.strategy.rsi_interval
         atr_idx = self.max_margin - self.strategy.atr_interval
@@ -38,6 +38,13 @@ class Analyzer:
         rsi = indicators.compute_rsi(self.data.loc[rsi_idx:], self.strategy.rsi_interval)
         atr = indicators.compute_atr(self.data.loc[atr_idx:], self.strategy.atr_interval)
 
+        # Less confluence, more sensitivity
+        for day in range(len(self.data) - self.max_margin):
+            if rsi[day] < 30:
+                print(f'{day} Buy')
+            elif rsi[day] > 70:
+                print(f'{day} Sell')
+
 if __name__ == '__main__':
-    a = Analyzer('AAPL', '2024-06-03', '2024-12-12')
-    print(a.gen_signal())
+    a = Analyzer('TSLA', '2024-06-03', '2024-12-12')
+    print(a.gen_signals())
