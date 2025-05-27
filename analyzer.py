@@ -7,19 +7,20 @@ class Analyzer:
     def __init__(self, ticker: str, start_date: str, end_date: str):
         self.strategy = strategy.Strategy()
         self.ticker = ticker
-        self.original_start_date = datetime.strptime(start_date, "%Y-%m-%d")
+        self.orig_start_date = datetime.strptime(start_date, "%Y-%m-%d")
         self.end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
         self.max_margin = max(
+            self.strategy.slow_sma_interval,
+            self.strategy.fast_sma_interval,
             self.strategy.rsi_interval,
-            self.strategy.sma_interval,
             self.strategy.atr_interval
         )
 
         data = pd.read_csv("market_data.csv", parse_dates=["Date"])
         data = data[data["Symbol"] == self.ticker].sort_values("Date").reset_index(drop=True)
 
-        idx = data[data["Date"] == self.original_start_date].index
+        idx = data[data["Date"] == self.orig_start_date].index
 
         if len(idx) == 0 or idx[0] < self.max_margin:
             raise ValueError("Invalid start date or insufficient margin.")
@@ -30,21 +31,27 @@ class Analyzer:
         self.data = data.loc[start_idx:end_idx].reset_index(drop=True)
 
     def gen_signals(self):
-        sma_idx = self.max_margin - self.strategy.sma_interval
+        slow_sma_idx = self.max_margin - self.strategy.slow_sma_interval
+        fast_sma_idx = self.max_margin - self.strategy.fast_sma_interval
         rsi_idx = self.max_margin - self.strategy.rsi_interval
         atr_idx = self.max_margin - self.strategy.atr_interval
 
-        sma = indicators.compute_sma(self.data.loc[sma_idx:], self.strategy.sma_interval)
+        slow_sma = indicators.compute_sma(self.data.loc[slow_sma_idx:], self.strategy.slow_sma_interval)
+        fast_sma = indicators.compute_sma(self.data.loc[fast_sma_idx:], self.strategy.fast_sma_interval)
         rsi = indicators.compute_rsi(self.data.loc[rsi_idx:], self.strategy.rsi_interval)
         atr = indicators.compute_atr(self.data.loc[atr_idx:], self.strategy.atr_interval)
 
+        close_prices = self.data["Close"].iloc[self.max_margin:].reset_index(drop=True)
+
         # Less confluence, more sensitivity
-        for day in range(len(self.data) - self.max_margin):
-            if rsi[day] < 30:
-                print(f'{day} Buy')
-            elif rsi[day] > 70:
-                print(f'{day} Sell')
+        for day in range(len(close_prices)):
+            print(day)
+            if rsi[day] < self.strategy.rsi_l:
+                print('Buy')
+
+            elif rsi[day] > self.strategy.rsi_u:
+                print('Sell')
 
 if __name__ == '__main__':
-    a = Analyzer('TSLA', '2024-06-03', '2024-12-12')
+    a = Analyzer('GOOG', '2024-06-03', '2024-12-12')
     print(a.gen_signals())
