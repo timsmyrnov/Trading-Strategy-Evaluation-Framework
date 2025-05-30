@@ -45,13 +45,16 @@ class Analyzer:
 
         # Less confluence, more sensitivity
         for day in range(len(close_prices)):
-            print(day)
             if rsi[day] < self.strategy.rsi_l:
-                print('Buy')
+                print("RSI candidate BUY at", day)
+            if rsi[day] > self.strategy.rsi_u:
+                print("RSI candidate SELL at", day)
 
-            elif rsi[day] > self.strategy.rsi_u:
-                print('Sell')
+            if fast_sma[day] > slow_sma[day] and fast_sma[day - 1] <= slow_sma[day - 1]:
+                print("SMA crossover BUY at", day)
+            if fast_sma[day] < slow_sma[day] and fast_sma[day - 1] >= slow_sma[day - 1]:
+                print("SMA crossover SELL at", day)
 
 if __name__ == '__main__':
-    a = Analyzer('GOOG', '2024-06-03', '2024-12-12')
+    a = Analyzer('MSFT', '2015-06-02', '2024-12-12')
     print(a.gen_signals())
