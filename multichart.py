@@ -93,7 +93,7 @@ ax3.set_ylabel("RSI", color="#1f7ea3")
 ax3.tick_params(axis="y", labelcolor="#1f7ea3")
 ax3.set_ylim(0, 100)
 
-plt.title("AAPL Close Price, 50-Day SMA, 14-Day ATR, and 14-Day RSI (2024-06-03 to 2024-12-12)")
+plt.title("AAPL Close Price | 50-Day SMA | 14-Day ATR | 14-Day RSI")
 
 lines_1, labels_1 = ax1.get_legend_handles_labels()
 lines_2, labels_2 = ax2.get_legend_handles_labels()
