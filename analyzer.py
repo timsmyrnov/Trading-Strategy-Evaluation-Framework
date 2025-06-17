@@ -11,8 +11,8 @@ class Analyzer:
         self.end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
         self.max_margin = max(
-            self.strategy.slow_sma_interval,
-            self.strategy.fast_sma_interval,
+            self.strategy.sma_slow_interval,
+            self.strategy.sma_fast_interval,
             self.strategy.rsi_interval,
             self.strategy.atr_interval
         )
@@ -31,29 +31,29 @@ class Analyzer:
         self.data = data.loc[start_idx:end_idx].reset_index(drop=True)
 
     def gen_signals(self):
-        slow_sma_idx = self.max_margin - self.strategy.slow_sma_interval
-        fast_sma_idx = self.max_margin - self.strategy.fast_sma_interval
+        sma_slow_idx = self.max_margin - self.strategy.sma_slow_interval
+        sma_fast_idx = self.max_margin - self.strategy.sma_fast_interval
         rsi_idx = self.max_margin - self.strategy.rsi_interval
         atr_idx = self.max_margin - self.strategy.atr_interval
 
-        slow_sma = indicators.compute_sma(self.data.loc[slow_sma_idx:], self.strategy.slow_sma_interval)
-        fast_sma = indicators.compute_sma(self.data.loc[fast_sma_idx:], self.strategy.fast_sma_interval)
+        sma_slow = indicators.compute_sma(self.data.loc[sma_slow_idx:], self.strategy.sma_slow_interval)
+        sma_fast = indicators.compute_sma(self.data.loc[sma_fast_idx:], self.strategy.sma_fast_interval)
         rsi = indicators.compute_rsi(self.data.loc[rsi_idx:], self.strategy.rsi_interval)
         atr = indicators.compute_atr(self.data.loc[atr_idx:], self.strategy.atr_interval)
 
         close_prices = self.data["Close"].iloc[self.max_margin:].reset_index(drop=True)
 
         # Less confluence, more sensitivity
-        for day in range(len(close_prices)):
-            if rsi[day] < self.strategy.rsi_l:
-                print("RSI candidate BUY at", day)
-            if rsi[day] > self.strategy.rsi_u:
-                print("RSI candidate SELL at", day)
+        for d in range(len(close_prices)):
+            if rsi[d] < self.strategy.rsi_l:
+                print("RSI candidate BUY at", d)
+            if rsi[d] > self.strategy.rsi_u:
+                print("RSI candidate SELL at", d)
 
-            if fast_sma[day] > slow_sma[day] and fast_sma[day - 1] <= slow_sma[day - 1]:
-                print("SMA crossover BUY at", day)
-            if fast_sma[day] < slow_sma[day] and fast_sma[day - 1] >= slow_sma[day - 1]:
-                print("SMA crossover SELL at", day)
+            if sma_fast[d] > sma_slow[d] and sma_fast[d - 1] <= sma_slow[d - 1]:
+                print("SMA crossover BUY at", d)
+            if sma_fast[d] < sma_slow[d] and sma_fast[d - 1] >= sma_slow[d - 1]:
+                print("SMA crossover SELL at", d)
 
 if __name__ == '__main__':
     a = Analyzer('MSFT', '2015-06-02', '2024-12-12')
